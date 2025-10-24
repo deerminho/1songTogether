@@ -140,6 +140,30 @@
             font-style: italic;
         }
 
+        .next-song-waiting {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .blink-effect {
+            animation: blink 1s ease-in-out infinite;
+            font-size: 20px !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes blink {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.1);
+            }
+        }
+
         .hidden {
             display: none;
         }
@@ -184,6 +208,14 @@
                 font-size: 24px;
             }
 
+            .next-song-waiting {
+                font-size: 14px;
+            }
+
+            .blink-effect {
+                font-size: 16px !important;
+            }
+
             .next-button {
                 padding: 12px;
                 font-size: 15px;
@@ -211,6 +243,14 @@
             .song-title {
                 font-size: 14px;
             }
+
+            .next-song-waiting {
+                font-size: 13px;
+            }
+
+            .blink-effect {
+                font-size: 15px !important;
+            }
         }
     </style>
 </head>
@@ -233,9 +273,8 @@
                     <div class="status" id="status1">대기 중...</div>
                 </div>
                 <div class="timer-container countdown">
-                    <div class="timer-label">카운트다운</div>
-                    <div class="timer-display" id="countdown1">00:40</div>
-                    <div class="status" id="countdown-status1">대기 중...</div>
+                    <div class="timer-label">다음 곡</div>
+                    <div class="next-song-waiting" id="next-waiting1">다음 곡 대기 중!</div>
                 </div>
             </div>
             <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
@@ -254,9 +293,8 @@
                     <div class="status" id="status2">대기 중...</div>
                 </div>
                 <div class="timer-container countdown">
-                    <div class="timer-label">카운트다운</div>
-                    <div class="timer-display" id="countdown2">00:40</div>
-                    <div class="status" id="countdown-status2">대기 중...</div>
+                    <div class="timer-label">다음 곡</div>
+                    <div class="next-song-waiting" id="next-waiting2">다음 곡 대기 중!</div>
                 </div>
             </div>
             <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
@@ -274,15 +312,13 @@
                 seconds: 0, 
                 interval: null, 
                 running: false,
-                countdown: 40,
-                countdownInterval: null
+                blinkTimeout: null
             },
             2: { 
                 seconds: 0, 
                 interval: null, 
                 running: false,
-                countdown: 40,
-                countdownInterval: null
+                blinkTimeout: null
             }
         };
 
@@ -293,7 +329,8 @@
                 playerVars: {
                     'enablejsapi': 1,
                     'origin': window.location.origin,
-                    'autoplay': 1
+                    'autoplay': 1,
+                    'rel': 0
                 },
                 events: {
                     'onReady': (event) => onPlayerReady(event, 1),
@@ -305,7 +342,8 @@
                 videoId: 'BRiBNS0aTVo',
                 playerVars: {
                     'enablejsapi': 1,
-                    'origin': window.location.origin
+                    'origin': window.location.origin,
+                    'rel': 0
                 },
                 events: {
                     'onReady': (event) => onPlayerReady(event, 2),
@@ -325,11 +363,16 @@
             if (event.data === YT.PlayerState.PLAYING) {
                 // 재생 시작
                 startTimer(songNum);
-                startCountdown(songNum);
-            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-                // 일시정지 또는 종료
+                startBlinkEffect(songNum);
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                // 일시정지
                 pauseTimer(songNum);
-                pauseCountdown(songNum);
+                stopBlinkEffect(songNum);
+            } else if (event.data === YT.PlayerState.ENDED) {
+                // 곡 종료 - 자동으로 다음 곡 재생
+                pauseTimer(songNum);
+                stopBlinkEffect(songNum);
+                goToNextSong();
             }
         }
 
@@ -341,19 +384,8 @@
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
-        function formatCountdown(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            
-            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
         function updateDisplay(timerNum) {
             document.getElementById(`timer${timerNum}`).textContent = formatTime(timers[timerNum].seconds);
-        }
-
-        function updateCountdownDisplay(timerNum) {
-            document.getElementById(`countdown${timerNum}`).textContent = formatCountdown(timers[timerNum].countdown);
         }
 
         function startTimer(timerNum) {
@@ -384,37 +416,30 @@
             document.getElementById(`status${timerNum}`).textContent = '대기 중...';
         }
 
-        function startCountdown(timerNum) {
-            if (timers[timerNum].countdownInterval) return;
+        function startBlinkEffect(timerNum) {
+            const element = document.getElementById(`next-waiting${timerNum}`);
+            // 반짝임 효과 제거 (초기화)
+            element.classList.remove('blink-effect');
             
-            document.getElementById(`countdown-status${timerNum}`).textContent = '진행 중...';
-            
-            timers[timerNum].countdownInterval = setInterval(() => {
-                if (timers[timerNum].countdown > 0) {
-                    timers[timerNum].countdown--;
-                    updateCountdownDisplay(timerNum);
-                } else {
-                    clearInterval(timers[timerNum].countdownInterval);
-                    timers[timerNum].countdownInterval = null;
-                    document.getElementById(`countdown-status${timerNum}`).textContent = '종료!';
-                }
-            }, 1000);
-        }
-
-        function pauseCountdown(timerNum) {
-            if (timers[timerNum].countdownInterval) {
-                clearInterval(timers[timerNum].countdownInterval);
-                timers[timerNum].countdownInterval = null;
-                document.getElementById(`countdown-status${timerNum}`).textContent = '일시정지';
+            // 기존 타임아웃 제거
+            if (timers[timerNum].blinkTimeout) {
+                clearTimeout(timers[timerNum].blinkTimeout);
             }
+            
+            // 40초 후 반짝임 효과 추가
+            timers[timerNum].blinkTimeout = setTimeout(() => {
+                element.classList.add('blink-effect');
+            }, 40000); // 40초
         }
 
-        function resetCountdown(timerNum) {
-            clearInterval(timers[timerNum].countdownInterval);
-            timers[timerNum].countdownInterval = null;
-            timers[timerNum].countdown = 40;
-            updateCountdownDisplay(timerNum);
-            document.getElementById(`countdown-status${timerNum}`).textContent = '대기 중...';
+        function stopBlinkEffect(timerNum) {
+            const element = document.getElementById(`next-waiting${timerNum}`);
+            element.classList.remove('blink-effect');
+            
+            if (timers[timerNum].blinkTimeout) {
+                clearTimeout(timers[timerNum].blinkTimeout);
+                timers[timerNum].blinkTimeout = null;
+            }
         }
 
         function goToNextSong() {
@@ -428,11 +453,11 @@
                     players[1].pauseVideo();
                 }
                 pauseTimer(1);
-                pauseCountdown(1);
+                stopBlinkEffect(1);
                 
                 // 두 번째 곡 재생 및 타이머 리셋
                 resetTimer(2);
-                resetCountdown(2);
+                stopBlinkEffect(2);
                 if (players[2] && players[2].playVideo) {
                     setTimeout(() => {
                         players[2].playVideo();
@@ -450,11 +475,11 @@
                     players[2].pauseVideo();
                 }
                 pauseTimer(2);
-                pauseCountdown(2);
+                stopBlinkEffect(2);
                 
                 // 첫 번째 곡 재생 및 타이머 리셋
                 resetTimer(1);
-                resetCountdown(1);
+                stopBlinkEffect(1);
                 if (players[1] && players[1].playVideo) {
                     setTimeout(() => {
                         players[1].playVideo();
