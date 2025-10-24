@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음악 플레이어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .header-image {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .header-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .player-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 2px solid rgba(230, 230, 250, 0.5);
+        }
+
+        .song-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e8eaf6;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .timers-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .timer-container {
+            background: linear-gradient(135deg, #9fa8da 0%, #7986cb 100%);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .timer-container.countdown {
+            background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+        }
+
+        .timer-label {
+            color: white;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .timer-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .next-button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border: 2px solid #66bb6a;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .next-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .next-button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 8px;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header-image {
+                margin-bottom: 15px;
+                border-radius: 12px;
+            }
+
+            .player-wrapper {
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .song-title {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+
+            .timers-row {
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .timer-container {
+                padding: 12px;
+                border-radius: 10px;
+            }
+
+            .timer-label {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+
+            .timer-display {
+                font-size: 24px;
+            }
+
+            .next-button {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .status {
+                font-size: 11px;
+            }
+
+            .video-container {
+                border-radius: 10px;
+            }
+        }
+
+        /* 작은 모바일 */
+        @media (max-width: 480px) {
+            .timer-display {
+                font-size: 20px;
+            }
+
+            .timer-label {
+                font-size: 10px;
+            }
+
+            .song-title {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-image">
+        <img src="/mnt/user-data/uploads/preview2.jpg" alt="배경 이미지">
+    </div>
+
+    <div class="container">
+        <!-- 첫 번째 곡 -->
+        <div class="player-wrapper" id="player1">
+            <div class="song-title">홀로된 사랑 (Lonely Love) Official MV</div>
+            <div class="video-container">
+                <div id="video1"></div>
+            </div>
+            <div class="timers-row">
+                <div class="timer-container">
+                    <div class="timer-label">재생 시간</div>
+                    <div class="timer-display" id="timer1">00:00:00</div>
+                    <div class="status" id="status1">대기 중...</div>
+                </div>
+                <div class="timer-container countdown">
+                    <div class="timer-label">카운트다운</div>
+                    <div class="timer-display" id="countdown1">00:40</div>
+                    <div class="status" id="countdown-status1">대기 중...</div>
+                </div>
+            </div>
+            <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
+        </div>
+
+        <!-- 두 번째 곡 -->
+        <div class="player-wrapper hidden" id="player2">
+            <div class="song-title">내 곁에 있어주 | 야외녹음실 | LIVE</div>
+            <div class="video-container">
+                <div id="video2"></div>
+            </div>
+            <div class="timers-row">
+                <div class="timer-container">
+                    <div class="timer-label">재생 시간</div>
+                    <div class="timer-display" id="timer2">00:00:00</div>
+                    <div class="status" id="status2">대기 중...</div>
+                </div>
+                <div class="timer-container countdown">
+                    <div class="timer-label">카운트다운</div>
+                    <div class="timer-display" id="countdown2">00:40</div>
+                    <div class="status" id="countdown-status2">대기 중...</div>
+                </div>
+            </div>
+            <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        let players = {};
+        let currentSong = 1;
+        
+        // 타이머 상태 관리
+        const timers = {
+            1: { 
+                seconds: 0, 
+                interval: null, 
+                running: false,
+                countdown: 40,
+                countdownInterval: null
+            },
+            2: { 
+                seconds: 0, 
+                interval: null, 
+                running: false,
+                countdown: 40,
+                countdownInterval: null
+            }
+        };
+
+        // YouTube IFrame API가 준비되면 호출
+        function onYouTubeIframeAPIReady() {
+            players[1] = new YT.Player('video1', {
+                videoId: 'jXJKJc5fZnE',
+                playerVars: {
+                    'enablejsapi': 1,
+                    'origin': window.location.origin
+                },
+                events: {
+                    'onStateChange': (event) => onPlayerStateChange(event, 1)
+                }
+            });
+
+            players[2] = new YT.Player('video2', {
+                videoId: 'BRiBNS0aTVo',
+                playerVars: {
+                    'enablejsapi': 1,
+                    'origin': window.location.origin
+                },
+                events: {
+                    'onStateChange': (event) => onPlayerStateChange(event, 2)
+                }
+            });
+        }
+
+        function onPlayerStateChange(event, songNum) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                // 재생 시작
+                startTimer(songNum);
+                startCountdown(songNum);
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                // 일시정지 또는 종료
+                pauseTimer(songNum);
+                pauseCountdown(songNum);
+            }
+        }
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function formatCountdown(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateDisplay(timerNum) {
+            document.getElementById(`timer${timerNum}`).textContent = formatTime(timers[timerNum].seconds);
+        }
+
+        function updateCountdownDisplay(timerNum) {
+            document.getElementById(`countdown${timerNum}`).textContent = formatCountdown(timers[timerNum].countdown);
+        }
+
+        function startTimer(timerNum) {
+            if (timers[timerNum].running) return;
+            
+            timers[timerNum].running = true;
+            document.getElementById(`status${timerNum}`).textContent = '재생 중...';
+            
+            timers[timerNum].interval = setInterval(() => {
+                timers[timerNum].seconds++;
+                updateDisplay(timerNum);
+            }, 1000);
+        }
+
+        function pauseTimer(timerNum) {
+            if (!timers[timerNum].running) return;
+            
+            timers[timerNum].running = false;
+            clearInterval(timers[timerNum].interval);
+            document.getElementById(`status${timerNum}`).textContent = '일시정지';
+        }
+
+        function resetTimer(timerNum) {
+            timers[timerNum].running = false;
+            clearInterval(timers[timerNum].interval);
+            timers[timerNum].seconds = 0;
+            updateDisplay(timerNum);
+            document.getElementById(`status${timerNum}`).textContent = '대기 중...';
+        }
+
+        function startCountdown(timerNum) {
+            if (timers[timerNum].countdownInterval) return;
+            
+            document.getElementById(`countdown-status${timerNum}`).textContent = '진행 중...';
+            
+            timers[timerNum].countdownInterval = setInterval(() => {
+                if (timers[timerNum].countdown > 0) {
+                    timers[timerNum].countdown--;
+                    updateCountdownDisplay(timerNum);
+                } else {
+                    clearInterval(timers[timerNum].countdownInterval);
+                    timers[timerNum].countdownInterval = null;
+                    document.getElementById(`countdown-status${timerNum}`).textContent = '종료!';
+                }
+            }, 1000);
+        }
+
+        function pauseCountdown(timerNum) {
+            if (timers[timerNum].countdownInterval) {
+                clearInterval(timers[timerNum].countdownInterval);
+                timers[timerNum].countdownInterval = null;
+                document.getElementById(`countdown-status${timerNum}`).textContent = '일시정지';
+            }
+        }
+
+        function resetCountdown(timerNum) {
+            clearInterval(timers[timerNum].countdownInterval);
+            timers[timerNum].countdownInterval = null;
+            timers[timerNum].countdown = 40;
+            updateCountdownDisplay(timerNum);
+            document.getElementById(`countdown-status${timerNum}`).textContent = '대기 중...';
+        }
+
+        function goToNextSong() {
+            if (currentSong === 1) {
+                // 첫 번째 곡 숨기기
+                document.getElementById('player1').classList.add('hidden');
+                document.getElementById('player2').classList.remove('hidden');
+                
+                // 첫 번째 곡 정지
+                if (players[1]) {
+                    players[1].pauseVideo();
+                }
+                pauseTimer(1);
+                pauseCountdown(1);
+                
+                // 두 번째 곡 재생 및 타이머 리셋
+                resetTimer(2);
+                resetCountdown(2);
+                if (players[2]) {
+                    players[2].playVideo();
+                }
+                
+                currentSong = 2;
+            } else {
+                // 두 번째 곡 숨기기
+                document.getElementById('player2').classList.add('hidden');
+                document.getElementById('player1').classList.remove('hidden');
+                
+                // 두 번째 곡 정지
+                if (players[2]) {
+                    players[2].pauseVideo();
+                }
+                pauseTimer(2);
+                pauseCountdown(2);
+                
+                // 첫 번째 곡 재생 및 타이머 리셋
+                resetTimer(1);
+                resetCountdown(1);
+                if (players[1]) {
+                    players[1].playVideo();
+                }
+                
+                currentSong = 1;
+            }
+        }
+    </script>
+</body>
+</html>
