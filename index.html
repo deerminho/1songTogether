@@ -15,14 +15,14 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             min-height: 100vh;
-            padding: 15px;
+            padding: 10px;
         }
 
         .header-image {
             width: 100%;
-            max-width: 900px;
-            margin: 0 auto 20px;
-            border-radius: 16px;
+            max-width: 700px;
+            margin: 0 auto 15px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             border: 2px solid rgba(255, 255, 255, 0.8);
@@ -35,24 +35,24 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
         .player-wrapper {
             background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border: 2px solid rgba(230, 230, 250, 0.5);
         }
 
         .song-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
         }
 
@@ -61,8 +61,8 @@
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
             border: 2px solid #e8eaf6;
         }
 
@@ -72,20 +72,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .timers-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 0;
         }
 
         .timer-container {
             background: transparent;
-            padding: 16px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             text-align: center;
             border: 4px solid rgba(159, 168, 218, 0.8);
         }
@@ -115,13 +115,13 @@
 
         .timer-label {
             color: #5c6bc0;
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 11px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .timer-display {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
             color: #5c6bc0;
             font-family: 'Courier New', monospace;
@@ -137,17 +137,11 @@
         }
 
         .next-song-waiting {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             color: #ec407a;
             text-align: center;
             line-height: 1.4;
-        }
-
-        .click-text {
-            font-size: 32px;
-            display: inline-block;
-            margin-top: 5px;
         }
 
         .blink-effect .next-song-waiting {
@@ -202,96 +196,82 @@
         /* 모바일 최적화 */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 8px;
             }
 
             .header-image {
-                margin-bottom: 15px;
-                border-radius: 12px;
+                margin-bottom: 12px;
+                border-radius: 10px;
             }
 
             .player-wrapper {
-                padding: 15px;
-                border-radius: 12px;
-            }
-
-            .song-title {
-                font-size: 16px;
-                margin-bottom: 12px;
-            }
-
-            .timers-row {
-                gap: 10px;
-                margin-bottom: 12px;
-            }
-
-            .timer-container {
                 padding: 12px;
                 border-radius: 10px;
             }
 
+            .song-title {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .timers-row {
+                gap: 8px;
+                margin-bottom: 0;
+            }
+
+            .timer-container {
+                padding: 10px;
+                border-radius: 8px;
+            }
+
             .timer-label {
-                font-size: 11px;
-                margin-bottom: 6px;
+                font-size: 10px;
+                margin-bottom: 5px;
             }
 
             .timer-display {
-                font-size: 24px;
-            }
-
-            .next-song-waiting {
-                font-size: 18px;
-            }
-
-            .click-text {
-                font-size: 24px;
-            }
-
-            .blink-effect .next-song-waiting {
                 font-size: 20px;
             }
 
-            .blink-effect .click-text {
-                font-size: 26px;
+            .next-song-waiting {
+                font-size: 15px;
+            }
+
+            .blink-effect .next-song-waiting {
+                font-size: 17px;
+            }
+                font-size: 20px;
             }
 
             .status {
-                font-size: 11px;
+                font-size: 10px;
             }
 
             .video-container {
-                border-radius: 10px;
+                border-radius: 8px;
             }
         }
 
         /* 작은 모바일 */
         @media (max-width: 480px) {
             .timer-display {
-                font-size: 20px;
-            }
-
-            .timer-label {
-                font-size: 10px;
-            }
-
-            .song-title {
-                font-size: 14px;
-            }
-
-            .next-song-waiting {
-                font-size: 16px;
-            }
-
-            .click-text {
-                font-size: 22px;
-            }
-
-            .blink-effect .next-song-waiting {
                 font-size: 18px;
             }
 
-            .blink-effect .click-text {
-                font-size: 24px;
+            .timer-label {
+                font-size: 9px;
+            }
+
+            .song-title {
+                font-size: 13px;
+            }
+
+            .next-song-waiting {
+                font-size: 14px;
+            }
+
+            .blink-effect .next-song-waiting {
+                font-size: 16px;
             }
         }
     </style>
@@ -368,6 +348,7 @@
                     'enablejsapi': 1,
                     'origin': window.location.origin,
                     'autoplay': 1,
+                    'mute': 1,
                     'rel': 0
                 },
                 events: {
