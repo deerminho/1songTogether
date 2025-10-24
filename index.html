@@ -496,8 +496,9 @@
                 // 두 번째 곡 재생 및 타이머 리셋
                 resetTimer(2);
                 stopBlinkEffect(2);
-                if (players[2] && players[2].playVideo) {
+                if (players[2] && players[2].seekTo) {
                     setTimeout(() => {
+                        players[2].seekTo(0);
                         players[2].playVideo();
                     }, 500);
                 }
@@ -518,8 +519,9 @@
                 // 첫 번째 곡 재생 및 타이머 리셋
                 resetTimer(1);
                 stopBlinkEffect(1);
-                if (players[1] && players[1].playVideo) {
+                if (players[1] && players[1].seekTo) {
                     setTimeout(() => {
+                        players[1].seekTo(0);
                         players[1].playVideo();
                     }, 500);
                 }
