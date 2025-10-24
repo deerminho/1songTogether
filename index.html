@@ -92,6 +92,23 @@
 
         .timer-container.countdown {
             background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .next-song-button {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-song-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 64, 122, 0.4);
+        }
+
+        .next-song-button:active {
+            transform: scale(0.98);
         }
 
         .timer-label {
@@ -109,29 +126,6 @@
             letter-spacing: 1px;
         }
 
-        .next-button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border: 2px solid #66bb6a;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
-        }
-
-        .next-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .next-button:active {
-            transform: translateY(0);
-        }
-
         .status {
             text-align: center;
             color: rgba(255, 255, 255, 0.9);
@@ -141,26 +135,53 @@
         }
 
         .next-song-waiting {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             color: white;
             text-align: center;
+            line-height: 1.4;
+        }
+
+        .blink-effect .next-song-waiting {
+            animation: textBlink 0.8s ease-in-out infinite;
         }
 
         .blink-effect {
-            animation: blink 1s ease-in-out infinite;
-            font-size: 20px !important;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            animation: boxPulse 0.8s ease-in-out infinite;
+            position: relative;
         }
 
-        @keyframes blink {
+        @keyframes textBlink {
             0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                            0 0 20px rgba(255, 255, 255, 0.6),
+                            0 0 30px rgba(255, 255, 255, 0.4);
             }
             50% { 
-                opacity: 0.6; 
-                transform: scale(1.1);
+                opacity: 0.7;
+                text-shadow: 0 0 20px rgba(255, 255, 255, 1),
+                            0 0 40px rgba(255, 255, 255, 0.8),
+                            0 0 60px rgba(255, 255, 255, 0.6);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes boxPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.6),
+                           0 0 40px rgba(255, 215, 0, 0.4),
+                           inset 0 0 20px rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 215, 0, 0.8);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(255, 215, 0, 1),
+                           0 0 80px rgba(255, 215, 0, 0.6),
+                           0 0 120px rgba(255, 215, 0, 0.4),
+                           inset 0 0 40px rgba(255, 255, 255, 0.4);
+                border-color: rgba(255, 255, 0, 1);
             }
         }
 
@@ -209,16 +230,11 @@
             }
 
             .next-song-waiting {
-                font-size: 14px;
+                font-size: 18px;
             }
 
-            .blink-effect {
-                font-size: 16px !important;
-            }
-
-            .next-button {
-                padding: 12px;
-                font-size: 15px;
+            .blink-effect .next-song-waiting {
+                font-size: 20px;
             }
 
             .status {
@@ -245,11 +261,11 @@
             }
 
             .next-song-waiting {
-                font-size: 13px;
+                font-size: 16px;
             }
 
-            .blink-effect {
-                font-size: 15px !important;
+            .blink-effect .next-song-waiting {
+                font-size: 18px;
             }
         }
     </style>
@@ -272,12 +288,10 @@
                     <div class="timer-display" id="timer1">00:00:00</div>
                     <div class="status" id="status1">대기 중...</div>
                 </div>
-                <div class="timer-container countdown">
-                    <div class="timer-label">다음 곡</div>
-                    <div class="next-song-waiting" id="next-waiting1">다음 곡 대기 중!</div>
+                <div class="timer-container countdown next-song-button" id="next-box1" onclick="goToNextSong()">
+                    <div class="next-song-waiting" id="next-waiting1">다음 곡 대기 중!<br>지금 눌러주세요!</div>
                 </div>
             </div>
-            <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
         </div>
 
         <!-- 두 번째 곡 -->
@@ -292,12 +306,10 @@
                     <div class="timer-display" id="timer2">00:00:00</div>
                     <div class="status" id="status2">대기 중...</div>
                 </div>
-                <div class="timer-container countdown">
-                    <div class="timer-label">다음 곡</div>
-                    <div class="next-song-waiting" id="next-waiting2">다음 곡 대기 중!</div>
+                <div class="timer-container countdown next-song-button" id="next-box2" onclick="goToNextSong()">
+                    <div class="next-song-waiting" id="next-waiting2">다음 곡 대기 중!<br>지금 눌러주세요!</div>
                 </div>
             </div>
-            <button class="next-button" onclick="goToNextSong()">다음 곡 ▶</button>
         </div>
     </div>
 
@@ -417,9 +429,9 @@
         }
 
         function startBlinkEffect(timerNum) {
-            const element = document.getElementById(`next-waiting${timerNum}`);
+            const box = document.getElementById(`next-box${timerNum}`);
             // 반짝임 효과 제거 (초기화)
-            element.classList.remove('blink-effect');
+            box.classList.remove('blink-effect');
             
             // 기존 타임아웃 제거
             if (timers[timerNum].blinkTimeout) {
@@ -428,13 +440,13 @@
             
             // 40초 후 반짝임 효과 추가
             timers[timerNum].blinkTimeout = setTimeout(() => {
-                element.classList.add('blink-effect');
+                box.classList.add('blink-effect');
             }, 40000); // 40초
         }
 
         function stopBlinkEffect(timerNum) {
-            const element = document.getElementById(`next-waiting${timerNum}`);
-            element.classList.remove('blink-effect');
+            const box = document.getElementById(`next-box${timerNum}`);
+            box.classList.remove('blink-effect');
             
             if (timers[timerNum].blinkTimeout) {
                 clearTimeout(timers[timerNum].blinkTimeout);
