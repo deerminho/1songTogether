@@ -216,7 +216,7 @@
 </head>
 <body>
     <div class="header-image">
-        <img src="/mnt/user-data/uploads/preview2.jpg" alt="배경 이미지">
+        <img src="preview2.jpg" alt="배경 이미지">
     </div>
 
     <div class="container">
@@ -292,9 +292,11 @@
                 videoId: 'jXJKJc5fZnE',
                 playerVars: {
                     'enablejsapi': 1,
-                    'origin': window.location.origin
+                    'origin': window.location.origin,
+                    'autoplay': 1
                 },
                 events: {
+                    'onReady': (event) => onPlayerReady(event, 1),
                     'onStateChange': (event) => onPlayerStateChange(event, 1)
                 }
             });
@@ -306,9 +308,17 @@
                     'origin': window.location.origin
                 },
                 events: {
+                    'onReady': (event) => onPlayerReady(event, 2),
                     'onStateChange': (event) => onPlayerStateChange(event, 2)
                 }
             });
+        }
+
+        function onPlayerReady(event, songNum) {
+            // 첫 번째 곡은 자동 재생
+            if (songNum === 1) {
+                event.target.playVideo();
+            }
         }
 
         function onPlayerStateChange(event, songNum) {
@@ -423,8 +433,10 @@
                 // 두 번째 곡 재생 및 타이머 리셋
                 resetTimer(2);
                 resetCountdown(2);
-                if (players[2]) {
-                    players[2].playVideo();
+                if (players[2] && players[2].playVideo) {
+                    setTimeout(() => {
+                        players[2].playVideo();
+                    }, 500);
                 }
                 
                 currentSong = 2;
@@ -443,8 +455,10 @@
                 // 첫 번째 곡 재생 및 타이머 리셋
                 resetTimer(1);
                 resetCountdown(1);
-                if (players[1]) {
-                    players[1].playVideo();
+                if (players[1] && players[1].playVideo) {
+                    setTimeout(() => {
+                        players[1].playVideo();
+                    }, 500);
                 }
                 
                 currentSong = 1;
