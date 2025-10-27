@@ -347,8 +347,8 @@
                 playerVars: {
                     'enablejsapi': 1,
                     'origin': window.location.origin,
-                    'autoplay': 0,
-                    'mute': 0,
+                    'autoplay': 1,
+                    'mute': 1,
                     'rel': 0
                 },
                 events: {
@@ -362,7 +362,6 @@
                 playerVars: {
                     'enablejsapi': 1,
                     'origin': window.location.origin,
-                    'autoplay': 0,
                     'rel': 0
                 },
                 events: {
@@ -373,7 +372,10 @@
         }
 
         function onPlayerReady(event, songNum) {
-            // 버튼 클릭 후에만 재생되도록 자동 재생 제거
+            // 첫 번째 곡은 자동 재생
+            if (songNum === 1) {
+                event.target.playVideo();
+            }
         }
 
         function onPlayerStateChange(event, songNum) {
