@@ -63,16 +63,17 @@
             </div>
         </div>
 
-     
+    </div>
 
     <script>
         const VIDEO_ID = 'nczfiJBMA2U';
-        const START_TIME = 38;
-        const END_TIME = 50;
+        const MIN_TIME = 38;
+        const MAX_TIME = 50;
         const API_KEY = 'AIzaSyBt2uGMOK2izAperlAOSC66KDsSw1uoYMs';
         
         let player;
         let checkInterval;
+        let targetStopTime = 0;
 
         // 숫자 포맷팅 함수
         function formatNumber(num) {
@@ -90,7 +91,7 @@
             player = new YT.Player('youtube-player', {
                 videoId: VIDEO_ID,
                 playerVars: {
-                    autoplay: 1,
+                    autoplay: 0,
                     controls: 1,
                     modestbranding: 1,
                     rel: 0
@@ -104,26 +105,35 @@
 
         // 플레이어 준비 완료
         function onPlayerReady(event) {
-            playRandomSegment();
             loadStats();
             
             // 30초마다 통계 업데이트
             setInterval(loadStats, 30000);
+            
+            // 1초 후 첫 재생 시작
+            setTimeout(() => {
+                playFromStart();
+            }, 1000);
         }
 
         // 플레이어 상태 변경
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
                 startTimer();
-            } else if (event.data == YT.PlayerState.ENDED) {
-                playRandomSegment();
             }
         }
 
-        // 랜덤 구간 재생
-        function playRandomSegment() {
-            const randomStart = START_TIME + Math.random() * (END_TIME - START_TIME - 2);
-            player.seekTo(randomStart, true);
+        // 0초부터 시작하여 랜덤 시간에 정지
+        function playFromStart() {
+            if (!player || !player.seekTo) return;
+            
+            // 38~50초 사이에서 랜덤으로 정지 시간 설정
+            targetStopTime = MIN_TIME + Math.random() * (MAX_TIME - MIN_TIME);
+            
+            console.log('🎵 0초부터 시작 → ' + targetStopTime.toFixed(1) + '초에 정지 예정');
+            
+            // 0초부터 시작
+            player.seekTo(0, true);
             player.playVideo();
         }
 
@@ -136,13 +146,22 @@
             checkInterval = setInterval(() => {
                 if (player && player.getCurrentTime) {
                     const currentTime = player.getCurrentTime();
-                    const remaining = END_TIME - currentTime;
+                    const remaining = targetStopTime - currentTime;
                     
-                    document.getElementById('timer').textContent = Math.max(0, Math.floor(remaining));
+                    // 목표 시간까지 남은 시간 표시
+                    const remainingSeconds = Math.max(0, Math.floor(remaining));
+                    document.getElementById('timer').textContent = remainingSeconds;
 
-                    // 50초에 도달하면 다시 랜덤 위치로
-                    if (currentTime >= END_TIME) {
-                        playRandomSegment();
+                    // 목표 시간에 도달하면 정지 후 새로운 재생
+                    if (currentTime >= targetStopTime - 0.3) {
+                        console.log('✅ ' + targetStopTime.toFixed(1) + '초 도달! 정지 후 새로 시작');
+                        player.pauseVideo();
+                        clearInterval(checkInterval);
+                        
+                        // 1초 후 다시 0초부터 시작
+                        setTimeout(() => {
+                            playFromStart();
+                        }, 1000);
                     }
                 }
             }, 100);
@@ -170,4 +189,3 @@
     </script>
 </body>
 </html>
-
