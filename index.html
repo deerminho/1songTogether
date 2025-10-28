@@ -152,16 +152,13 @@
                     const remainingSeconds = Math.max(0, Math.floor(remaining));
                     document.getElementById('timer').textContent = remainingSeconds;
 
-                    // 목표 시간에 도달하면 정지 후 새로운 재생
+                    // 목표 시간에 도달하면 즉시 새로운 재생
                     if (currentTime >= targetStopTime - 0.3) {
-                        console.log('✅ ' + targetStopTime.toFixed(1) + '초 도달! 정지 후 새로 시작');
-                        player.pauseVideo();
+                        console.log('✅ ' + targetStopTime.toFixed(1) + '초 도달! 즉시 새로 시작');
                         clearInterval(checkInterval);
                         
-                        // 1초 후 다시 0초부터 시작
-                        setTimeout(() => {
-                            playFromStart();
-                        }, 1000);
+                        // 즉시 다시 0초부터 시작
+                        playFromStart();
                     }
                 }
             }, 100);
