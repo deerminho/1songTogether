@@ -11,54 +11,54 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-pink-50 via-white to-pink-100 p-4">
+<body class="min-h-screen bg-gradient-to-br from-pink-50 via-white to-pink-100 p-2 md:p-4">
     <div class="max-w-4xl mx-auto">
         <!-- 헤더 -->
-        <div class="text-center mb-6">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+        <div class="text-center mb-4 md:mb-6">
+            <h1 class="text-xl md:text-3xl lg:text-4xl font-bold text-gray-800">
                 🔥민호특공대 실시간 총공 현황🔥
             </h1>
         </div>
 
         <!-- 비디오 플레이어 섹션 -->
-        <div class="bg-white rounded-2xl p-6 mb-6 shadow-lg border-2 border-teal-300">
+        <div class="bg-white rounded-2xl p-3 md:p-6 mb-4 md:mb-6 shadow-lg border-2 border-teal-300">
             <!-- YouTube 플레이어 -->
-            <div class="relative aspect-video bg-black rounded-lg overflow-hidden border-2 border-teal-300 mb-4">
+            <div class="relative aspect-video bg-black rounded-lg overflow-hidden border-2 border-teal-300 mb-3 md:mb-4">
                 <div id="youtube-player" class="w-full h-full"></div>
             </div>
 
             <!-- 타이머 표시 (영상 아래) -->
             <div class="text-center">
-                <div class="inline-block bg-teal-400 px-6 py-3 rounded-full">
-                    <span class="text-white text-lg font-semibold">
-                        다음 곡까지 <span id="timer" class="text-2xl font-bold">12</span>초
+                <div class="inline-block bg-teal-400 px-4 py-2 md:px-6 md:py-3 rounded-full">
+                    <span class="text-white text-sm md:text-lg font-semibold">
+                        다음 곡까지 <span id="timer" class="text-xl md:text-2xl font-bold">0</span>초
                     </span>
                 </div>
             </div>
         </div>
 
         <!-- 통계 섹션 -->
-        <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-teal-300">
-            <div class="grid grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-3 md:p-6 shadow-lg border-2 border-teal-300">
+            <div class="grid grid-cols-3 gap-2 md:gap-6">
                 <!-- 조회수 -->
-                <div class="rounded-xl p-6 text-center transform hover:scale-105 transition-all border-4 border-teal-400 bg-white">
-                    <div class="text-teal-600 text-sm mb-2 font-bold">조회수</div>
-                    <div id="views" class="text-gray-800 text-3xl font-bold">0</div>
-                    <div class="text-gray-500 text-xs mt-2">👁️ 실시간</div>
+                <div class="rounded-xl p-3 md:p-6 text-center transform hover:scale-105 transition-all border-2 md:border-4 border-teal-400 bg-white">
+                    <div class="text-teal-600 text-xs md:text-sm mb-1 md:mb-2 font-bold">조회수</div>
+                    <div id="views" class="text-gray-800 text-base md:text-3xl font-bold break-words">0</div>
+                    <div class="text-gray-500 text-xs mt-1 md:mt-2">👁️</div>
                 </div>
 
                 <!-- 좋아요 -->
-                <div class="rounded-xl p-6 text-center transform hover:scale-105 transition-all border-4 border-pink-400 bg-white">
-                    <div class="text-pink-500 text-sm mb-2 font-bold">좋아요</div>
-                    <div id="likes" class="text-gray-800 text-3xl font-bold">0</div>
-                    <div class="text-gray-500 text-xs mt-2">👍</div>
+                <div class="rounded-xl p-3 md:p-6 text-center transform hover:scale-105 transition-all border-2 md:border-4 border-pink-400 bg-white">
+                    <div class="text-pink-500 text-xs md:text-sm mb-1 md:mb-2 font-bold">좋아요</div>
+                    <div id="likes" class="text-gray-800 text-base md:text-3xl font-bold break-words">0</div>
+                    <div class="text-gray-500 text-xs mt-1 md:mt-2">👍</div>
                 </div>
 
                 <!-- 댓글 -->
-                <div class="rounded-xl p-6 text-center transform hover:scale-105 transition-all border-4 border-teal-400 bg-white">
-                    <div class="text-teal-600 text-sm mb-2 font-bold">댓글</div>
-                    <div id="comments" class="text-gray-800 text-3xl font-bold">0</div>
-                    <div class="text-gray-500 text-xs mt-2">💬</div>
+                <div class="rounded-xl p-3 md:p-6 text-center transform hover:scale-105 transition-all border-2 md:border-4 border-teal-400 bg-white">
+                    <div class="text-teal-600 text-xs md:text-sm mb-1 md:mb-2 font-bold">댓글</div>
+                    <div id="comments" class="text-gray-800 text-base md:text-3xl font-bold break-words">0</div>
+                    <div class="text-gray-500 text-xs mt-1 md:mt-2">💬</div>
                 </div>
             </div>
         </div>
